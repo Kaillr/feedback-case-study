@@ -20,6 +20,7 @@ app.use(cors(corsOptions));
 app.use(rateLimiter);
 app.use(express.json());
 
+// Use routes
 app.use(routes)
 
 export default app;
