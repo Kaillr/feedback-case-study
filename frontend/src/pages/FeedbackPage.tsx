@@ -4,8 +4,17 @@ import Header from '../components/Header';
 import logo from '../assets/images/logo_protector_no.svg';
 import userIcon from '../assets/images/user.png'
 
+interface Feedback {
+    id: string;
+    name: string;
+    email: string;
+    subject: string;
+    message: string;
+    created_at: string;
+}
+
 export default function FeedbackPage() {
-    const { data: feedbackData, refetch } = useQuery({
+    const { data: feedbackData, refetch } = useQuery<Feedback[]>({
         queryFn: async () => {
             const result = await fetch('http://localhost:3000/api/feedback');
             const json = await result.json();
@@ -155,8 +164,13 @@ export default function FeedbackPage() {
                 <div className='feedbackList'>
                     <h2>Våre Tilbakemeldinger ({feedbackData?.length ?? 0}):</h2>
                     <ul>
-                        {feedbackData?.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-                            .map((feedback) => {
+                        {feedbackData
+                            ?.sort(
+                                (a, b) =>
+                                    new Date(b.created_at).getTime() -
+                                    new Date(a.created_at).getTime()
+                            )
+                            .map((feedback: Feedback) => {
                                 return (
                                     <li key={feedback.id}>
                                         <div className="top">
