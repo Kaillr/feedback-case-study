@@ -24,10 +24,6 @@ export default function FeedbackPage() {
         refetchOnWindowFocus: false
     });
 
-    /*     const { mutateAsync: addFeedbackMutation } = useMutation({
-            mutationFn:
-        }) */
-
     const [feedbackForm, setFeedbackForm] = useState({
         name: "",
         email: "",
