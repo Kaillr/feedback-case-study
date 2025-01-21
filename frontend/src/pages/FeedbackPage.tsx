@@ -16,7 +16,7 @@ interface Feedback {
 export default function FeedbackPage() {
     const { data: feedbackData, refetch } = useQuery<Feedback[]>({
         queryFn: async () => {
-            const result = await fetch('http://localhost:3000/api/feedback');
+            const result = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/feedback`);
             const json = await result.json();
             return json.data;
         },
