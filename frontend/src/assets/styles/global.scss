@@ -1,6 +1,7 @@
 $main-background-color: #f6f4f2;
 $text-color: #455560;
 $dark: #393f4c;
+$main-color: #E86F00;
 
 @font-face {
     font-family: 'Lato';
@@ -9,7 +10,7 @@ $dark: #393f4c;
 
 @font-face {
     font-family: 'Josefin Sans';
-    src: url(../fonts/Lato-Regular.ttf);
+    src: url(../fonts/JosefinSans-VariableFont_wght.ttf);
 }
 
 * {
@@ -28,6 +29,14 @@ body {
 
 h1 {
     font-size: 2.625rem;
+}
+
+h1, h2 {
+    font-family: 'Josefin Sans', Arial, sans-serif;
+}
+
+.headline {
+    margin-bottom: 40px;
 }
 
 textarea {
@@ -139,27 +148,126 @@ header {
         justify-content: center;
         background-color: white;
     }
-    box-shadow: 0 1px 23px 0 rgba(0,0,0,.1);
+
+    box-shadow: 0 1px 23px 0 rgba(0, 0, 0, .1);
+    text-wrap: nowrap;
 }
 
 
 main {
-    form {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        gap: 10px;
+    .feedbackForm {
+        form {
+            height: fit-content;
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 10px;
 
-        button,
-        input,
-        textarea {
-            padding: 10px;
+            label {
+                font-size: 1.1rem;
+            }
+
+            button,
+            input,
+            textarea {
+                padding: 10px;
+                background-color: white;
+                border-radius: 3px;
+                font-size: 0.9rem;
+                color: $text-color;
+                outline: 1px solid #ddd;
+                transition: outline .1s ease-out;
+
+                &:focus {
+                    outline: 2px solid $main-color;
+                }
+
+                .error {
+                    outline: 2px solid red;
+                }
+            }
+
+            button {
+                background-color: $dark;
+                color: $main-background-color;
+                font-weight: bold;
+                border: 0;
+                margin-top: 32px;
+                cursor: pointer;
+                transition: background-color .1s ease-out;
+                width: 150px;
+                min-width: 100%;
+
+                &:hover {
+                    background-color: $main-color;
+                }
+            }
         }
+
+        .submitted {
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+            img {
+                max-width: 200px;
+            }
+        }
+
+        background-color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 24px;
+        min-height: 600px;
     }
 
     width: 100%;
     max-width: 1140px;
-    padding: 0 15px;
+    padding: 60px 15px;
     margin: 0 auto;
+
+
+    .feedbackList {
+        h2 {
+            font-size: 2rem;
+            margin: 20px 0;
+        }
+        ul {
+            li {
+                .top {
+                    img {
+                        border: 4px solid $main-color;
+                        background-color: $main-color;
+                        border-radius: 50%;
+                        height: 74px;
+                        aspect-ratio: 1/1;
+                    }
+                    span {
+                        opacity: .5;
+                    }
+                    display: flex;
+                    align-items: center;
+                    gap: 20px;
+                }
+
+                background-color: white;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                gap: 20px;
+
+            }
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        margin: 50px 0;
+    }
+
 }
