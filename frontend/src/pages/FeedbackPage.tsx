@@ -1,17 +1,34 @@
 import { useState, useEffect } from 'react'
+import { useQuery } from '@tanstack/react-query';
 import Header from '../components/Header';
+import logo from '../assets/images/logo_protector_no.svg';
+import userIcon from '../assets/images/user.png'
 
 export default function FeedbackPage() {
+    const { data: feedbackData, refetch } = useQuery({
+        queryFn: async () => {
+            const result = await fetch('http://localhost:3000/api/feedback');
+            const json = await result.json();
+            return json.data;
+        },
+        queryKey: ['feedback'],
+        refetchOnWindowFocus: false
+    });
+
+    /*     const { mutateAsync: addFeedbackMutation } = useMutation({
+            mutationFn:
+        }) */
+
     const [feedbackForm, setFeedbackForm] = useState({
-        name: "Mikael Holand",
-        email: "mikael.holand@gmail.com",
-        subject: "Test",
-        message: "Hello World",
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
         isPending: false,
         isSubmitted: false,
     });
-    const [feedbackList, setFeedbackList] = useState<any[]>([])
 
+    // Handles input changes in form
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFeedbackForm((prev) => ({
@@ -20,6 +37,7 @@ export default function FeedbackPage() {
         }));
     };
 
+    // Handles form submission
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -46,6 +64,9 @@ export default function FeedbackPage() {
                 throw new Error('Failed to submit feedback');
             }
 
+            // Manually refetch feedback data list
+            refetch()
+
             setFeedbackForm({
                 name: "",
                 email: "",
@@ -64,86 +85,97 @@ export default function FeedbackPage() {
     };
 
     useEffect(() => {
-        document.title = "Feedback - Protector Forsikring"
-    });
-
-    useEffect(() => {
-        fetch('http://localhost:3000/api/feedback')
-            .then((res) => res.json())
-            .then((data) => {
-                console.log("Feedback data:", data);  // Inspecting structure
-                if (Array.isArray(data.data)) {
-                    setFeedbackList(data.data);  // Accessing the data property
-                } else {
-                    console.error("Expected an array in 'data' but got:", data);
-                    setFeedbackList([]);  // Fallback to empty array
-                }
-            })
-            .catch((error) => {
-                console.error('Error fetching feedback:', error);
-                setFeedbackList([]);  // Handle error gracefully, reset to empty
-            });
+        document.title = "Tilbakemelding - Protector Forsikring"
     }, []);
-
-
 
     return (
         <>
             <Header />
-            <main>
-                <h1>Tilbakemelding</h1>
-                <form onSubmit={handleSubmit}>
-                    <label htmlFor="name">Navn:</label>
-                    <input
-                        name="name"
-                        type="text"
-                        value={feedbackForm.name}
-                        onChange={handleChange}
-                        maxLength={255}
-                        required
-                    />
+            <main>{ }
+                <h1 className='headline'>Tilbakemelding</h1>
+                <div className='feedbackForm'>
+                    {!feedbackForm.isSubmitted ? (
+                        <form onSubmit={handleSubmit}>
+                            <label htmlFor="name">Navn:</label>
+                            <input
+                                name="name"
+                                type="text"
+                                value={feedbackForm.name}
+                                onChange={handleChange}
+                                maxLength={255}
+                                required
+                                placeholder="Ditt fulle navn"
+                            />
 
-                    <label htmlFor="email">Epost:</label>
-                    <input
-                        name="email"
-                        type="text"
-                        value={feedbackForm.email}
-                        onChange={handleChange}
-                        maxLength={255}
-                        required
-                    />
+                            <label htmlFor="email">Epost:</label>
+                            <input
+                                name="email"
+                                type="email"
+                                value={feedbackForm.email}
+                                onChange={handleChange}
+                                maxLength={255}
+                                required
+                                placeholder="Din epost adresse"
+                            />
 
-                    <label htmlFor="subject">Emne:</label>
-                    <input
-                        name="subject"
-                        type="text"
-                        value={feedbackForm.subject}
-                        onChange={handleChange}
-                        maxLength={255}
-                        required
-                    />
+                            <label htmlFor="subject">Emne:</label>
+                            <input
+                                name="subject"
+                                type="text"
+                                value={feedbackForm.subject}
+                                onChange={handleChange}
+                                maxLength={255}
+                                required
+                                placeholder="Tittel på tilbakemelding"
+                            />
 
-                    <label htmlFor="message">Melding:</label>
-                    <textarea
-                        name="message"
-                        value={feedbackForm.message}
-                        onChange={handleChange}
-                        rows={5}
-                        required
-                    />
+                            <label htmlFor="message">Melding:</label>
+                            <textarea
+                                name="message"
+                                value={feedbackForm.message}
+                                onChange={handleChange}
+                                rows={5}
+                                required
+                            />
 
-                    <button type='submit'>Send</button>
-                </form>
-                <div>
+                            {feedbackForm.isPending && <p>Takk for din tilbakemelding, din innsending er i ferd med å behandles!</p>}
+
+                            <button type="submit" disabled={feedbackForm.isPending}>
+                                {feedbackForm.isPending ? 'Sender...' : 'Send'}
+                            </button>
+                        </form>
+                    ) : (
+                        <div className='submitted'>
+                            Takk for din tilbakemelding!
+                            <img src={logo} alt="logo_protector_no" />
+                        </div>
+                    )}
+
+                </div>
+                <div className='feedbackList'>
+                    <h2>Våre Tilbakemeldinger ({feedbackData?.length ?? 0}):</h2>
                     <ul>
-                        {feedbackList.map((feedback) => (
-                            <li key={feedback.id}>
-                                <h3>{feedback.subject}</h3>
-                                <p>{feedback.name} - {feedback.email}</p>
-                                <p>{feedback.message}</p>
-                                <p>Submitted: {new Date(feedback.created_at).toDateString()}</p>
-                            </li>
-                        ))}
+                        {feedbackData?.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+                            .map((feedback) => {
+                                return (
+                                    <li key={feedback.id}>
+                                        <div className="top">
+                                            <img src={userIcon} />
+                                            <div>
+                                                <h3>{feedback.subject}</h3>
+                                                <span title={new Date(feedback.created_at).toLocaleTimeString()}>
+                                                    {new Date(feedback.created_at).toLocaleDateString()} - {feedback.name}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <p>
+                                            {feedback.message.split("\n").map((line, index) => (
+                                                <span key={index}>{line}<br /></span>
+                                            ))}
+                                        </p>
+                                    </li>
+                                );
+                            })}
                     </ul>
                 </div>
             </main>
