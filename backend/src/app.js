@@ -7,6 +7,7 @@ const app = express();
 const corsOptions = {
     origin: [
         "http://localhost:5173",
+        "https://case.mikaelho.land"
     ],
 };
 const rateLimiter = rateLimit({
