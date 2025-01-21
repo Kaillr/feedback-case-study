@@ -17,7 +17,7 @@ const rateLimiter = rateLimit({
 
 // Middleware
 app.use(cors(corsOptions));
-/* app.use(rateLimiter); */
+app.use(rateLimiter);
 app.use(express.json());
 
 app.use(routes)
