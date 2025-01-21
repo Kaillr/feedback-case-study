@@ -50,7 +50,7 @@ export default function FeedbackPage() {
         }));
 
         try {
-            const response = await fetch('http://localhost:3000/api/feedback', {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/feedback`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
