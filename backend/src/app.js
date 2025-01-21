@@ -19,6 +19,7 @@ const rateLimiter = rateLimit({
 app.use(cors(corsOptions));
 app.use(rateLimiter);
 app.use(express.json());
+app.set('trust proxy', 1); // Trust nginx proxy
 
 // Use routes
 app.use(routes)
