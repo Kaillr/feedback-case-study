@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Header from '../components/Header';
 import logo from '../assets/images/logo_protector_no.svg';
-import userIcon from '../assets/images/user.png'
+import userIcon from '../assets/images/user.png';
 
 interface Feedback {
     id: string;
@@ -21,28 +21,26 @@ export default function FeedbackPage() {
             return json.data;
         },
         queryKey: ['feedback'],
-        refetchOnWindowFocus: false
+        refetchOnWindowFocus: false,
     });
 
     const [feedbackForm, setFeedbackForm] = useState({
-        name: "",
-        email: "",
-        subject: "",
-        message: "",
+        name: '',
+        email: '',
+        subject: '',
+        message: '',
         isPending: false,
         isSubmitted: false,
     });
 
-    // Handles input changes in form
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFeedbackForm((prev) => ({
             ...prev,
-            [name]: value
+            [name]: value,
         }));
     };
 
-    // Handles form submission
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -69,14 +67,17 @@ export default function FeedbackPage() {
                 throw new Error('Failed to submit feedback');
             }
 
-            // Manually refetch feedback data list
-            refetch()
+            /* const { mutateAsync: addFeedbackMutation } = useMutation({
+                mutationFn:
+            }); */
+
+            refetch();
 
             setFeedbackForm({
-                name: "",
-                email: "",
-                subject: "",
-                message: "",
+                name: '',
+                email: '',
+                subject: '',
+                message: '',
                 isPending: false,
                 isSubmitted: true,
             });
@@ -90,72 +91,69 @@ export default function FeedbackPage() {
     };
 
     useEffect(() => {
-        document.title = "Tilbakemelding - Protector Forsikring"
+        document.title = 'Tilbakemelding - Protector Forsikring';
     }, []);
 
     return (
         <>
             <Header />
-            <main>{ }
+            <main>
                 <h1 className='headline'>Tilbakemelding</h1>
                 <div className='feedbackForm'>
                     {!feedbackForm.isSubmitted ? (
                         <form onSubmit={handleSubmit}>
-                            <label htmlFor="name">Navn:</label>
+                            <label htmlFor='name'>Navn:</label>
                             <input
-                                name="name"
-                                type="text"
+                                name='name'
+                                type='text'
                                 value={feedbackForm.name}
                                 onChange={handleChange}
                                 maxLength={255}
                                 required
-                                placeholder="Ditt fulle navn"
+                                placeholder='Ditt fulle navn'
                             />
 
-                            <label htmlFor="email">Epost:</label>
+                            <label htmlFor='email'>Epost:</label>
                             <input
-                                name="email"
-                                type="email"
+                                name='email'
+                                type='email'
                                 value={feedbackForm.email}
                                 onChange={handleChange}
                                 maxLength={255}
                                 required
-                                placeholder="Din epost adresse"
+                                placeholder='Din epost adresse'
                             />
 
-                            <label htmlFor="subject">Emne:</label>
+                            <label htmlFor='subject'>Emne:</label>
                             <input
-                                name="subject"
-                                type="text"
+                                name='subject'
+                                type='text'
                                 value={feedbackForm.subject}
                                 onChange={handleChange}
                                 maxLength={255}
                                 required
-                                placeholder="Tittel på tilbakemelding"
+                                placeholder='Tittel på tilbakemelding'
                             />
 
-                            <label htmlFor="message">Melding:</label>
+                            <label htmlFor='message'>Melding:</label>
                             <textarea
-                                name="message"
+                                name='message'
                                 value={feedbackForm.message}
                                 onChange={handleChange}
                                 rows={5}
                                 required
                             />
 
-                            {feedbackForm.isPending && <p>Takk for din tilbakemelding, din innsending er i ferd med å behandles!</p>}
-
-                            <button type="submit" disabled={feedbackForm.isPending}>
+                            <button type='submit' disabled={feedbackForm.isPending}>
                                 {feedbackForm.isPending ? 'Sender...' : 'Send'}
                             </button>
                         </form>
                     ) : (
                         <div className='submitted'>
                             Takk for din tilbakemelding!
-                            <img src={logo} alt="logo_protector_no" />
+                            <img src={logo} alt='logo_protector_no' />
                         </div>
                     )}
-
                 </div>
                 <div className='feedbackList'>
                     <h2>Våre Tilbakemeldinger ({feedbackData?.length ?? 0}):</h2>
@@ -169,18 +167,23 @@ export default function FeedbackPage() {
                             .map((feedback: Feedback) => {
                                 return (
                                     <li key={feedback.id}>
-                                        <div className="top">
-                                            <img src={userIcon} />
+                                        <div className='top'>
+                                            <img src={userIcon} alt='User Icon' />
                                             <div>
                                                 <h3>{feedback.subject}</h3>
-                                                <span title={new Date(feedback.created_at).toLocaleTimeString()}>
-                                                    {new Date(feedback.created_at).toLocaleDateString()} - {feedback.name}
+                                                <span
+                                                    title={new Date(feedback.created_at).toLocaleTimeString()}>
+                                                    {new Date(feedback.created_at).toLocaleDateString()} -{' '}
+                                                    {feedback.name}
                                                 </span>
                                             </div>
                                         </div>
                                         <p>
-                                            {feedback.message.split("\n").map((line, index) => (
-                                                <span key={index}>{line}<br /></span>
+                                            {feedback.message.split('\n').map((line, index) => (
+                                                <span key={index}>
+                                                    {line}
+                                                    <br />
+                                                </span>
                                             ))}
                                         </p>
                                     </li>
@@ -190,5 +193,5 @@ export default function FeedbackPage() {
                 </div>
             </main>
         </>
-    )
+    );
 }
